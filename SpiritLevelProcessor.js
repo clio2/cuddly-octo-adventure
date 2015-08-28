@@ -87,7 +87,7 @@ function SpiritLevelProcessor()
         
         bufferArray.push(valuex_update)
         
-        while(bufferArray < 11){
+        while(bufferArray > 29){
             
             bufferArray.slice(1,10)
         };

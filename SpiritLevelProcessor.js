@@ -78,9 +78,9 @@ function SpiritLevelProcessor()
         
     }
 
-    function movingAverage(buffer, newValue)
+    function movingAverage(bufferArray)
     {
-        var valuex_update = event.accelerationIncludingGravity.x
+        var valuex_update = (event.accelerationIncludingGravity.x / 9.8)
         var bufferArray = [];
         var totalx_average = 0;
         var totalx = 0;

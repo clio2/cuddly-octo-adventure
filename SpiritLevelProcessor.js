@@ -60,6 +60,10 @@ function SpiritLevelProcessor()
     {
         var aX, aY, aZ;
         var gX, gY, gZ;
+        var bufferX = [];
+        var bufferY = [];
+        var bufferZ = [];
+        var test;
         //var aValues;
         // This function handles the new incoming values from the accelerometer
         aX = event.accelerationIncludingGravity.x;
@@ -72,33 +76,37 @@ function SpiritLevelProcessor()
         
         aValues = [gX, gY, gZ];
         
-        filteredValue = movingAverage(gX);
-        console.log(filteredValue);
         
         
+        test = [movingAverage(bufferX,gX), movingAverage(bufferY,gY), movingAverage(bufferZ,gZ)];
+        console.log(test);
     }
 
-    function movingAverage(gX)
+    function movingAverage(buffer, newValue)
     {
-        var valuex_update = gX
-        var bufferArray = [];
-        var totalx_average = 0;
-        var totalx = 0;
+        var value_update = newValue;
+        var total = 0;
+        var moving_Average = 0;
+		
         
-        bufferArray.push(valuex_update)
+        buffer.push(value_update)
+       
         
-        while(bufferArray > 29){
+        if(buffer.length > 30){
+   
+            buffer = buffer.slice(1);
             
-            bufferArray.slice(1,10)
+			
         };
-        for(var i = 0; i< bufferArray.length; i++){
-            totalx += bufferArray[i];
-            
+        for(var i = 0; i < buffer.length; i++){
+            total += buffer[i];
+           
         };
     
-        totalx_average = totalx / 10;
+        moving_Average = total / buffer.length;
         
-        return totalx_average;
+        
+        return moving_Average;
         // This function handles the Moving Average Filter
 
         // Input:

@@ -48,7 +48,15 @@ function SpiritLevelProcessor()
  
     var aValues;
     var filteredValue;
-
+    var newArray = {
+        x: buffer[0],
+        y: buffer[1],
+        z: buffer[2]
+    };
+        
+    console.log(filteredValue);
+    
+    
     self.initialise = function(controller)
     {
         uiController = controller;
@@ -69,7 +77,7 @@ function SpiritLevelProcessor()
         gX = aX/9.8;
         gY = aY/9.8;
         gZ = aZ/9.8;
-        
+           
         aValues = [gX, gY, gZ];
         
         filteredValue = movingAverage(buffer, aValues);
@@ -80,7 +88,8 @@ function SpiritLevelProcessor()
 
     function movingAverage(buffer, newValue)
     {
-        var newArray = buffer;
+        
+        newArray.x +=
         // This function handles the Moving Average Filter
 
         // Input:
@@ -92,9 +101,8 @@ function SpiritLevelProcessor()
 
         // Output: filteredValue
         //      This function should return the result of the moving average filter
-        for(i = 0; i < 3; i++){
-            newArray[i] = (newArray[i] + newValue[i])/2;
-        }
+        
+        
         
         
         return newArray

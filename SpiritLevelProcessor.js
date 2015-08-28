@@ -80,7 +80,25 @@ function SpiritLevelProcessor()
 
     function movingAverage(buffer, newValue)
     {
-        var newArray = buffer;
+        var valuex_update = event.accelerationIncludingGravity.x
+        var bufferArray = [];
+        var totalx_average = 0;
+        var totalx = 0;
+        
+        bufferArray.push(valuex_update)
+        
+        while(bufferArray < 11){
+            
+            bufferArray.slice(1,10)
+        };
+        for(var i = 0; i< bufferArray.length; i++){
+            totalx += bufferArray[i];
+            
+        };
+    
+        totalx_average = totalx / 10;
+        
+        return totalx_average;
         // This function handles the Moving Average Filter
 
         // Input:
@@ -92,12 +110,7 @@ function SpiritLevelProcessor()
 
         // Output: filteredValue
         //      This function should return the result of the moving average filter
-        for(i = 0; i < 3; i++){
-            newArray[i] = (newArray[i] + newValue[i])/2;
-        }
         
-        
-        return newArray
         
         
     }

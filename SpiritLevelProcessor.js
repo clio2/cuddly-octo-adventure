@@ -119,10 +119,28 @@ function SpiritLevelProcessor()
     {
         // This function will handle the calculation of the angle from the z-axis and
         // display it on the screen inside a "div" tag with the id of "message-area"
-
+      
         // Input: x,y,z
         //      These values should be the filtered values after the Moving Average for
         //      each of the axes respectively
+          var target = document.getElementById("message-area");
+            var x= filterX;
+            var y= filterY;
+            var z= filterZ;
+            var angleXY,angleXZ,angleYZ;
+            var outString="";
+            var x2 = Math.pow(x,2);
+            var y2 = Math.pow(y,2);
+            var z2 = Math.pow(z,2);
+            Fg = Math.sqrt(x2 + y2 + z2)
+            
+            angleXY = acos(Fg/x);
+            angleXZ = acos(Fg/y);
+            angleYZ = acos(Fg/z);
+           
+            
+            
+            message-area.innerHTML= outString;
     }
 
     self.freezeClick = function()

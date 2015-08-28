@@ -45,7 +45,7 @@ function SpiritLevelProcessor()
     var uiController = null;
     
     var buffer = [0, 0, 0];
-    
+ 
     var aValues;
     var filteredValue;
 
@@ -136,4 +136,3 @@ function SpiritLevelProcessor()
       //      This function should return the result of the moving average filter
     }
 }
-chhay is weird 

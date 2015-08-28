@@ -1,6 +1,6 @@
 /****************************************************************************************
 Avaiable functions for usage in the uiController object
-================================================================
+==========dfsfsdfsdfsfddsfdfdf======================================================
 uiController.bubbleTranslate(x,y, id)
     This function will translate the bubble from the middle of the screen.
     The center of the screen is considered (0,0).

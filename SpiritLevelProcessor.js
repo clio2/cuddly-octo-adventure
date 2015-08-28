@@ -136,4 +136,4 @@ function SpiritLevelProcessor()
       //      This function should return the result of the moving average filter
     }
 }
-asdf
+

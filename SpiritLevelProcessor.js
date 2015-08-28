@@ -72,13 +72,13 @@ function SpiritLevelProcessor()
         
         aValues = [gX, gY, gZ];
         
-        filteredValue = movingAverage(bufferArray);
+        filteredValue = movingAverage();
         console.log(filteredValue);
         
         
     }
 
-    function movingAverage(bufferArray)
+    function movingAverage()
     {
         var valuex_update = (event.accelerationIncludingGravity.x / 9.8)
         var bufferArray = [];

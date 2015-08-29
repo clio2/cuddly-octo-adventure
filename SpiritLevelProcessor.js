@@ -52,6 +52,7 @@ function SpiritLevelProcessor()
     var filteredValue;
     
     var onoff = 0;
+    //var u = 0;
 
     self.initialise = function(controller)
     {
@@ -87,19 +88,89 @@ function SpiritLevelProcessor()
        
         //bubbleTranslate code
         //var newX = 0, newY = 0;
-       // var bodyDi = uiController.bodyDimensions()
-        //var bodyX = bodyDi.width / 2
-        //var bodyY = bodyDi.height / 2
+       // var bodyDi = uiController.bodyDimensions();
+        //var bodyX = bodyDi.width / 2;
+        //var bodyY = bodyDi.height / 2;
         //var newerX = 0, newerY = 0, tempX = 0. tempY = 0;
        
         
-        	
-        //newX = bodyX * gX;
-       // newY = bodyY * gY;
+        //reset if needed=========================================================================================
+        //var firstgX = 0, firstgY = 0;
+        //if(u === 0){
+        //	firstgX = gX;
+        //	firstgY = gY;
+        //	u++;
+       // };
+     /*  if(firstgX > 0){
+          if(gX >= firstgX || gX <= -(1 - firstgX)){
+	     if(gX >= firstgX){
+	         newX = bodyX * ( (1 - firstgX ) - (1 - Math.abs(gX)))}
+
+             else{newX = bodyX * ((1 - Math.abs(gX)) + (1 - firstgX ))}
+
+}
+          else{newX = bodyX * -((1 -gX) - (1 - firstgX ))}
+
+}
+
+      else{
+	if(gX >= firstgX && gX <= (1 + firstgX)){
+	  if(gX >= firstgX){
+	    newX = bodyX * -( (0 + firstgX ) + (0 - gX))}
+
+          else{newX = bodyX * ((1 - Math.abs(gX)) + (1 - firstgX ))}
+
+}
+         else{
+		if(gX > 0){
+		newX = bodyX * -((1 - gX) + (1 + firstgX ))
+	}
+	        else{
+   		newX = bodyX * ((1 + gX) + -( 1 + firstgX ))}
+
+	}
+}
+       
+       if(firstgY > 0){
+	   if(gY >= firstgY || gY <= -(1 - firstgY)){
+	      if(gY >= firstgY){
+            	newY = bodyY * ( (1 - firstgY ) - (1 - Math.abs(gY)))
+	      	
+	      }
+
+              else{newY = bodyY * ((1 - Math.abs(gY)) + (1 - firstgY ))
+              	
+              }
+
+            }
+           else{newY = bodyY * -((1 -gY) - (1 - firstgY ))}
+
+           }
+
+      else{
+	if(gY >= firstgY && gY <= (1 + firstgY)){
+	  if(gY >= firstgY){
+	    newY = bodyY * -( (0 + firstgY ) + (0 - gY))}
+
+          else{newY = bodyY * ((1 - Math.abs(gY)) + (1 - firstgY ))}
+
+        }
+        else{
+		if(gY > 0){
+		newY = bodyY * -((1 - gY) + (1 + firstgY ))
+        	}
+          	else{
+		newY = bodyY * ((1 + gY) + -( 1 + firstgY ))}
+
+        	}
+}
+   */     
        // newerX = newX - tempX;
        // newerY = newY - tempX;
        // tempX = newX;
        //tempY = newY;
+       
+       
       //  uiController.bubbleTranslate(newerX, newerY, "dark-bubble");
         
         

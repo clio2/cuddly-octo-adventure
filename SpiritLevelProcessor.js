@@ -124,11 +124,13 @@ function SpiritLevelProcessor()
         //      These values should be the filtered values after the Moving Average for
         //      each of the axes respectively
           var target = document.getElementById("message-area");
-            var x= filterX;
-            var y= filterY;
-            var z= filterZ;
+            var x= filtervalue[0];
+            var y= filtervalue[1];
+            var z= filtervalue[2];
             var angleXY,angleXZ,angleYZ;
+            var actual_angle;
             var outString="";
+            
             var x2 = Math.pow(x,2);
             var y2 = Math.pow(y,2);
             var z2 = Math.pow(z,2);
@@ -137,8 +139,19 @@ function SpiritLevelProcessor()
             angleXY = acos(Fg/x);
             angleXZ = acos(Fg/y);
             angleYZ = acos(Fg/z);
-           
             
+            if (){
+                actual_angle = angleXY ;
+               else if(){
+                    actual_angle = angleXZ ;
+                    else(){
+                        actual_angle = angleYZ ;
+                        
+                    }
+                }
+            }
+           
+            outString += actual_angle + " degrees from the z axis." + "<br/>";
             
             message-area.innerHTML= outString;
     }

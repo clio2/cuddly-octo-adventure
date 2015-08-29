@@ -44,10 +44,14 @@ function SpiritLevelProcessor()
 
     var uiController = null;
     
-    var buffer = [0, 0, 0];
+    var bufferX = [];
+    var bufferY = [];
+    var bufferZ = [];
  
     var aValues;
     var filteredValue;
+    
+    var onoff = 0;
 
     self.initialise = function(controller)
     {
@@ -60,10 +64,7 @@ function SpiritLevelProcessor()
     {
         var aX, aY, aZ;
         var gX, gY, gZ;
-        var bufferX = [];
-        var bufferY = [];
-        var bufferZ = [];
-        var test;
+        var movingAverageX, movingAverageY, movingAverageZ;
         //var aValues;
         // This function handles the new incoming values from the accelerometer
         aX = event.accelerationIncludingGravity.x;
@@ -76,10 +77,13 @@ function SpiritLevelProcessor()
         
         aValues = [gX, gY, gZ];
         
+        movingAverageX = movingAverage(bufferX,gX);
+        movingAverageY = movingAverage(bufferY,gY);
+        movingAverageZ = movingAverage(bufferZ,gZ);
         
+        filteredValue = [movingAverageX, movingAverageY, movingAverageZ];
         
-        test = [movingAverage(bufferX,gX), movingAverage(bufferY,gY), movingAverage(bufferZ,gZ)];
-        console.log(test);
+        console.log(filteredValue);
     }
 
     function movingAverage(buffer, newValue)
@@ -135,6 +139,15 @@ function SpiritLevelProcessor()
 
     self.freezeClick = function()
     {
+    	if(onoff === 0){
+    		window.removeEventListener("devicemotion", handleMotion);
+    		onoff ++;
+    	}
+    	else{
+    		window.addEventListener("devicemotion", handleMotion);
+    		onoff = 0;
+    	}
+    	
         // ADVANCED FUNCTIONALITY
         // ================================================================
         // This function will trigger when the "Freeze" button is pressed
@@ -178,6 +191,6 @@ function SpiritLevelProcessor()
 
       // Output: filteredValue
       //      This function should return the result of the moving average filter
-    }
+   // }
 }
 

@@ -94,14 +94,14 @@ function SpiritLevelProcessor()
         //var newerX = 0, newerY = 0, tempX = 0. tempY = 0;
        
         
-        //reset if needed=========================================================================================
+        //reset starting doamin(-1 to 1) if needed==========================================================================
         //var firstgX = 0, firstgY = 0;
         //if(u === 0){
         //	firstgX = gX;
         //	firstgY = gY;
         //	u++;
        // };
-     /*  if(firstgX > 0){
+     /*  if(firstgX > 0){  //calculating the domain(-1 to 1) with the starting point as 0
           if(gX >= firstgX || gX <= -(1 - firstgX)){
 	     if(gX >= firstgX){
 	         newX = bodyX * ( (1 - firstgX ) - (1 - Math.abs(gX)))}
@@ -164,7 +164,7 @@ function SpiritLevelProcessor()
 
         	}
 }
-   */     
+   */  //==================================================================================================   
        // newerX = newX - tempX;
        // newerY = newY - tempX;
        // tempX = newX;

@@ -141,9 +141,32 @@ function SpiritLevelProcessor()
         // The ID of the button is "freeze-button"
     }
 
-    function movingMedian(buffer, newValue)
+    /*function movingMedian(buffer, newValue)
     {
-      // ADVANCED FUNCTIONALITY
+        
+        var value_update = newValue;
+        var middle = 0;
+        var movingMedian = 0;
+		
+        
+        buffer.push(value_update)
+       
+        
+        if(buffer.length > 30){
+   
+            buffer = buffer.slice(1);
+            };
+        buffer.sort(function(a,b){return a-b});
+        middle=parseInt(buffer.length/2);
+            if (buffer.length%2==1){
+                movingMedian = buffer[middle];}
+            else 
+            {movingMedian = (buffer[middle+1] + buffer[middle]) /2;
+            }
+         return movingMedian;} */
+         
+         
+      //ADVANCED FUNCTIONALITY
       // =================================================================
       // This function handles the Moving Median Filter
       // Input:

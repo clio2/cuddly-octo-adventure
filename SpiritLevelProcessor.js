@@ -86,19 +86,19 @@ function SpiritLevelProcessor()
         console.log(filteredValue);
        
         //bubbleTranslate code
-        //assuming the phone dimensions are 1000x700
-        // not sure if this goona work 
-        var scaleX = 350, scaleY = 500;
-        var newX = 0, newY = 0;
+        //var newX = 0, newY = 0;
+       // var bodyDi = uiController.bodyDimensions()
+        //var bodyX = bodyDi.width / 2
+        //var bodyY = bodyDi.height / 2
         
         
-        document.getElementById("dark-bubble").width = "20";
-        document.getElementById("dark-bubble").height = "20";
+        //document.getElementById("dark-bubble").width = "20";
+        //document.getElementById("dark-bubble").height = "20";
         	
-        newX = scaleX * gX;
-        newY = scaleY * gY;
+        //newX = bodyX * gX;
+       // newY = bodyY * gY;
         	
-        uiController.bubbleTranslate(newX, newY, "dark-bubble");
+      //  uiController.bubbleTranslate(newX, newY, "dark-bubble");
         
         
       

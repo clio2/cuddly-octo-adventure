@@ -144,7 +144,7 @@ function SpiritLevelProcessor()
     		onoff ++;
     	}
     	else{
-    		window.addEventListener("devicemotion", handleMotion);
+    		SpiritLevelProcessor.initialise;
     		onoff = 0;
     	}
     	

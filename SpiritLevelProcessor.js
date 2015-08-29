@@ -92,8 +92,8 @@ function SpiritLevelProcessor()
         //var bodyY = bodyDi.height / 2
         
         
-        //document.getElementById("dark-bubble").width = "20";
-        //document.getElementById("dark-bubble").height = "20";
+        //document.getElementById("dark-bubble").margin = "auto";
+        
         	
         //newX = bodyX * gX;
        // newY = bodyY * gY;

@@ -84,6 +84,24 @@ function SpiritLevelProcessor()
         filteredValue = [movingAverageX, movingAverageY, movingAverageZ];
         
         console.log(filteredValue);
+       
+        //bubbleTranslate code
+        //assuming the phone dimensions are 1000x700
+        // not sure if this goona work 
+        var scaleX = 350, scaleY = 500;
+        var newX = 0, newY = 0;
+        
+        
+        document.getElementById("dark-bubble").width = "20";
+        document.getElementById("dark-bubble").height = "20";
+        	
+        newX = scaleX * gX;
+        newY = scaleY * gY;
+        	
+        uiController.bubbleTranslate(newX, newY, "dark-bubble");
+        
+        
+      
     }
 
     function movingAverage(buffer, newValue)

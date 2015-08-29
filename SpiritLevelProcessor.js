@@ -90,15 +90,17 @@ function SpiritLevelProcessor()
        // var bodyDi = uiController.bodyDimensions()
         //var bodyX = bodyDi.width / 2
         //var bodyY = bodyDi.height / 2
-        
-        
-        //document.getElementById("dark-bubble").margin = "auto";
+        //var newerX = 0, newerY = 0, tempX = 0. tempY = 0;
+       
         
         	
         //newX = bodyX * gX;
        // newY = bodyY * gY;
-        	
-      //  uiController.bubbleTranslate(newX, newY, "dark-bubble");
+       // newerX = newX - tempX;
+       // newerY = newY - tempX;
+       // tempX = newX;
+       //tempY = newY;
+      //  uiController.bubbleTranslate(newerX, newerY, "dark-bubble");
         
         
       

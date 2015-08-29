@@ -44,7 +44,9 @@ function SpiritLevelProcessor()
 
     var uiController = null;
     
-    var buffer = [0, 0, 0];
+     var bufferX = [];
+     var bufferY = [];
+     var bufferZ = [];
  
     var aValues;
     var filteredValue;
@@ -60,10 +62,7 @@ function SpiritLevelProcessor()
     {
         var aX, aY, aZ;
         var gX, gY, gZ;
-        var bufferX = [];
-        var bufferY = [];
-        var bufferZ = [];
-        var test;
+        var movingAverageX, movingAverageY, movingAverageZ;
         //var aValues;
         // This function handles the new incoming values from the accelerometer
         aX = event.accelerationIncludingGravity.x;
@@ -76,10 +75,13 @@ function SpiritLevelProcessor()
         
         aValues = [gX, gY, gZ];
         
+        movingAverageX = movingAverage(bufferX,gX);
+        movingAverageY = movingAverage(bufferY,gY);
+        movingAverageZ = movingAverage(bufferZ,gZ);
         
+        filteredValue = [movingAverageX, movingAverageY, movingAverageZ];
         
-        test = [movingAverage(bufferX,gX), movingAverage(bufferY,gY), movingAverage(bufferZ,gZ)];
-        console.log(test);
+        console.log(filteredValue);
     }
 
     function movingAverage(buffer, newValue)

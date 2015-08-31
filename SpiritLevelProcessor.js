@@ -189,7 +189,7 @@ function SpiritLevelProcessor()
         
         if(buffer.length > 30){
    
-            buffer = buffer.slice(1,10);
+            buffer = buffer.splice(0,1);
             
 			
         };

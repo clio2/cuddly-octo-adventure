@@ -65,7 +65,7 @@ function SpiritLevelProcessor()
     {
         var aX, aY, aZ;
         var gX, gY, gZ;
-        var movingAverageX, movingAverageY, movingAverageZ;
+        var movingAverageX = 0, movingAverageY = 0, movingAverageZ = 0;
         //var aValues;
         // This function handles the new incoming values from the accelerometer
         aX = event.accelerationIncludingGravity.x;

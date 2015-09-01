@@ -86,86 +86,38 @@ function SpiritLevelProcessor()
 		
 		displayAngle(movingAverageX, movingAverageY, movingAverageZ);
        
-        //bubbleTranslate code
+        //bubbleTranslate code=================================================================================
         var newX = 0, newY = 0;
         var bodyDi = uiController.bodyDimensions();
         var bodyX = bodyDi.width / 2;
         var bodyY = bodyDi.height / 2;
         var newerX = 0, newerY = 0, tempX = 0, tempY = 0;
-       
-        
-        
-        var firstgX = 0, firstgY = 0;
-
-        if(firstgX >= 0){  
-            if(movingAverageX >= firstgX || movingAverageX <= -(1 - firstgX)){
-                if(movingAverageX >= firstgX){
-                    newX = bodyX * ( (1 - firstgX ) - (1 - Math.abs(movingAverageX)))
-                }
-                else{
-                    newX = bodyX * ((1 - Math.abs(movingAverageX)) + (1 - firstgX ))
-                }                
-            }
-            else{
-                newX = bodyX * -((1 -movingAverageX) - (1 - firstgX ))
-            }
-        }
-        
-        else{
-            if(movingAverageX >= firstgX && movingAverageX <= (1 + firstgX)){
-                if(movingAverageX >= firstgX){
-                    newX = bodyX * -( (0 + firstgX ) + (0 - movingAverageX))
-                }
-                else{
-                    newX = bodyX * ((1 - Math.abs(movingAverageX)) + (1 - firstgX ))
-                    }
-            }
-            else{
-        if(movingAverageX > 0){
-		  newX = bodyX * -((1 - movingAverageX) + (1 + firstgX ))
-            }
-	       else{
-   		   newX = bodyX * ((1 + movingAverageX) + -( 1 + firstgX ))
-                }
-            }
-        }
-       
-       if(firstgY >= 0){
-	       if(movingAverageY >= firstgY || movingAverageY <= -(1 - firstgY)){
-	           if(movingAverageY >= firstgY){
-            	newY = -(bodyY * ( (1 - firstgY ) - (1 - Math.abs(movingAverageY))))     	
-                }
-
-              else{newY = -(bodyY * ((1 - Math.abs(movingAverageY)) + (1 - firstgY )))
-              	
-              }
-
-            }
-           else{newY = -(bodyY * -((1 -movingAverageY) - (1 - firstgY )))}
-
-           }
-
-      else{
-	if(movingAverageY >= firstgY && movingAverageY <= (1 + firstgY)){
-	  if(movingAverageY >= firstgY){
-	    newY = -(bodyY * -( (0 + firstgY ) + (0 - movingAverageY)))
-	  }
-
-          else{newY = -(bodyY * ((1 - Math.abs(movingAverageY)) + (1 - firstgY )))
-			  }
-
-        }
-        else{
-		if(movingAverageY > 0){
-		newY = -(bodyY * -((1 - movingAverageY) + (1 + firstgY )))
-        	}
-          	else{
-		newY = -(bodyY * ((1 + movingAverageY) + -( 1 + firstgY )))
-			}
-
-        	}
-}
+        var tempAverageX, tempAverageY;
+        //these temps ensure no change to the filtervalues 
+		tempAverageX = movingAverageX;
+		tempAverageY = movingAverageY;
+		
+	//just in case it goes over the limit [-1,1] which it will.. cause it favours a bit to right for some reason	
+        if(movingAverageX > 1){
+		
+			tempAverageX = 1;
+		}
+        if(movingAverageX < -1){
+			tempAverageX = -1
+		}
+		if(movingAverageY > 1){
+		
+			tempAverageY = 1;
+		}
+        if(movingAverageY < -1){
+			tempAverageY = -1
+		}
+	//since the code start (0,0)
+	//the range act as a factor for the translations
+        newX = bodyX * tempAverageX;
+        newY = -(bodyY * tempAverageY);
    
+   //tempX amd tempY will acts as the previous location and translates from there
         newerX = newX - tempX;
         newerY = newY - tempX;
         tempX = newX;
@@ -174,7 +126,7 @@ function SpiritLevelProcessor()
        
        uiController.bubbleTranslate(newerX, newerY, "dark-bubble");
        uiController.bubbleTranslate(newerX, newerY, "pale-bubble");
-        
+        //=========================================================================================================
         
       
     }
@@ -306,5 +258,4 @@ function SpiritLevelProcessor()
       //      This function should return the result of the moving average filter
    // }
 }
-
 

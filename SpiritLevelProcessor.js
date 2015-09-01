@@ -44,12 +44,15 @@ function SpiritLevelProcessor()
 
     var uiController = null;
     
-     var bufferX = [];
-     var bufferY = [];
-     var bufferZ = [];
+    var bufferX = [];
+    var bufferY = [];
+    var bufferZ = [];
  
     var aValues;
     var filteredValue;
+    
+    var onoff = 0;
+    var u = 0;
 
     self.initialise = function(controller)
     {
@@ -62,7 +65,7 @@ function SpiritLevelProcessor()
     {
         var aX, aY, aZ;
         var gX, gY, gZ;
-        var movingAverageX, movingAverageY, movingAverageZ;
+        var movingAverageX = 0, movingAverageY = 0, movingAverageZ = 0;
         //var aValues;
         // This function handles the new incoming values from the accelerometer
         aX = event.accelerationIncludingGravity.x;
@@ -79,9 +82,101 @@ function SpiritLevelProcessor()
         movingAverageY = movingAverage(bufferY,gY);
         movingAverageZ = movingAverage(bufferZ,gZ);
         
-        filteredValue = [movingAverageX, movingAverageY, movingAverageZ];
+		console.log([movingAverageX,movingAverageY,movingAverageZ])
+		
+		displayAngle(movingAverageX, movingAverageY, movingAverageZ);
+       
+        //bubbleTranslate code
+        var newX = 0, newY = 0;
+        var bodyDi = uiController.bodyDimensions();
+        var bodyX = bodyDi.width / 2;
+        var bodyY = bodyDi.height / 2;
+        var newerX = 0, newerY = 0, tempX = 0, tempY = 0;
+       
         
-        console.log(filteredValue);
+        
+        var firstgX = 0, firstgY = 0;
+
+        if(firstgX >= 0){  
+            if(movingAverageX >= firstgX || movingAverageX <= -(1 - firstgX)){
+                if(movingAverageX >= firstgX){
+                    newX = bodyX * ( (1 - firstgX ) - (1 - Math.abs(movingAverageX)))
+                }
+                else{
+                    newX = bodyX * ((1 - Math.abs(movingAverageX)) + (1 - firstgX ))
+                }                
+            }
+            else{
+                newX = bodyX * -((1 -movingAverageX) - (1 - firstgX ))
+            }
+        }
+        
+        else{
+            if(movingAverageX >= firstgX && movingAverageX <= (1 + firstgX)){
+                if(movingAverageX >= firstgX){
+                    newX = bodyX * -( (0 + firstgX ) + (0 - movingAverageX))
+                }
+                else{
+                    newX = bodyX * ((1 - Math.abs(movingAverageX)) + (1 - firstgX ))
+                    }
+            }
+            else{
+        if(movingAverageX > 0){
+		  newX = bodyX * -((1 - movingAverageX) + (1 + firstgX ))
+            }
+	       else{
+   		   newX = bodyX * ((1 + movingAverageX) + -( 1 + firstgX ))
+                }
+            }
+        }
+       
+       if(firstgY >= 0){
+	       if(movingAverageY >= firstgY || movingAverageY <= -(1 - firstgY)){
+	           if(movingAverageY >= firstgY){
+            	newY = -(bodyY * ( (1 - firstgY ) - (1 - Math.abs(movingAverageY))))     	
+                }
+
+              else{newY = -(bodyY * ((1 - Math.abs(movingAverageY)) + (1 - firstgY )))
+              	
+              }
+
+            }
+           else{newY = -(bodyY * -((1 -movingAverageY) - (1 - firstgY )))}
+
+           }
+
+      else{
+	if(movingAverageY >= firstgY && movingAverageY <= (1 + firstgY)){
+	  if(movingAverageY >= firstgY){
+	    newY = -(bodyY * -( (0 + firstgY ) + (0 - movingAverageY)))
+	  }
+
+          else{newY = -(bodyY * ((1 - Math.abs(movingAverageY)) + (1 - firstgY )))
+			  }
+
+        }
+        else{
+		if(movingAverageY > 0){
+		newY = -(bodyY * -((1 - movingAverageY) + (1 + firstgY )))
+        	}
+          	else{
+		newY = -(bodyY * ((1 + movingAverageY) + -( 1 + firstgY )))
+			}
+
+        	}
+}
+   
+        newerX = newX - tempX;
+        newerY = newY - tempX;
+        tempX = newX;
+        tempY = newY;
+       
+       
+       uiController.bubbleTranslate(newerX, newerY, "dark-bubble");
+       uiController.bubbleTranslate(newerX, newerY, "pale-bubble");
+        
+        
+      
     }
 
     function movingAverage(buffer, newValue)
@@ -94,9 +189,9 @@ function SpiritLevelProcessor()
         buffer.push(value_update)
        
         
-        if(buffer.length > 30){
+        if(buffer.length > 20){
    
-            buffer = buffer.slice(1);
+            buffer.splice(0,1);
             
 			
         };
@@ -133,10 +228,31 @@ function SpiritLevelProcessor()
         // Input: x,y,z
         //      These values should be the filtered values after the Moving Average for
         //      each of the axes respectively
+		          var target = document.getElementById("message-area");
+
+            var angleXY,angleXZ,angleYZ;
+         
+            var outString="";
+            
+            var x2 = Math.pow(x,2);
+            var y2 = Math.pow(y,2);
+            var z2 = Math.pow(z,2);
+            Fg = Math.sqrt(x2 + y2 + z2)
+            
+    
+            angleYZ = (Math.acos(z/Fg) * 180) / Math.PI;
+            
+           
+    
+            outString += angleYZ.toFixed(2) + " degrees from the z axis." + "<br/>";
+            
+            target.innerHTML= outString;
     }
 
     self.freezeClick = function()
     {
+    	
+    	
         // ADVANCED FUNCTIONALITY
         // ================================================================
         // This function will trigger when the "Freeze" button is pressed
@@ -145,7 +261,38 @@ function SpiritLevelProcessor()
 
     function movingMedian(buffer, newValue)
     {
-      // ADVANCED FUNCTIONALITY
+        
+        var value_update = newValue;
+        var middle;
+        var movingaMedian;
+		var tempBuffer = 0;
+        
+        buffer.push(value_update)
+       
+        
+        if(buffer.length > 10){
+   
+            buffer.splice(0, 1);
+            }
+        
+		tempBuffer = buffer;
+        tempBuffer.sort(function(a,b){return a-b});
+        
+        middle = tempBuffer.length/2;
+        
+            if (tempBuffer.length % 2 === 0){
+                movingaMedian = (tempBuffer[middle] + tempBuffer[middle+1]) / 2;
+            }
+            else {
+                movingaMedian = tempBuffer[middle+0.5];
+            }
+
+         return movingaMedian;
+	}
+	
+         
+         
+      //ADVANCED FUNCTIONALITY
       // =================================================================
       // This function handles the Moving Median Filter
       // Input:
@@ -157,6 +304,7 @@ function SpiritLevelProcessor()
 
       // Output: filteredValue
       //      This function should return the result of the moving average filter
-    }
+   // }
 }
+
 

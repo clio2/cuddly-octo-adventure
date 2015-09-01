@@ -92,13 +92,28 @@ function SpiritLevelProcessor()
         var bodyX = bodyDi.width / 2;
         var bodyY = bodyDi.height / 2;
         var newerX = 0, newerY = 0, tempX = 0, tempY = 0;
-       
+        var tempAverageX, tempAverageY;
         
-        
-        var firstgX = 0, firstgY = 0;
-
-        newX = bodyX * movingAverageX;
-        newY = -(bodyY * movingAverageY);
+		tempAverageX = movingAverageX;
+		tempAverageY = movingAverageY;
+		
+        if(movingAverageX > 1){
+		
+			tempAverageX = 1;
+		}
+        if(movingAverageX < -1){
+			tempAverageX = -1
+		}
+		if(movingAverageY > 1){
+		
+			tempAverageY = 1;
+		}
+        if(movingAverageY < -1){
+			tempAverageY = -1
+		}
+		
+        newX = bodyX * tempAverageX;
+        newY = -(bodyY * tempAverageY);
    
         newerX = newX - tempX;
         newerY = newY - tempX;
@@ -240,5 +255,4 @@ function SpiritLevelProcessor()
       //      This function should return the result of the moving average filter
    // }
 }
-
 

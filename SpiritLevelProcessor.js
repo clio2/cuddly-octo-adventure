@@ -52,7 +52,7 @@ function SpiritLevelProcessor()
     var filteredValue;
     
     var onoff = 0;
-    //var u = 0;
+    var u = 0;
 
     self.initialise = function(controller)
     {
@@ -87,21 +87,21 @@ function SpiritLevelProcessor()
         console.log(filteredValue);
        
         //bubbleTranslate code
-        //var newX = 0, newY = 0;
-       // var bodyDi = uiController.bodyDimensions();
-        //var bodyX = bodyDi.width / 2;
-        //var bodyY = bodyDi.height / 2;
-        //var newerX = 0, newerY = 0, tempX = 0. tempY = 0;
+        var newX = 0, newY = 0;
+        var bodyDi = uiController.bodyDimensions();
+        var bodyX = bodyDi.width / 2;
+        var bodyY = bodyDi.height / 2;
+        var newerX = 0, newerY = 0, tempX = 0, tempY = 0;
        
         
-        //reset starting doamin(-1 to 1) if needed==========================================================================
-        //var firstgX = 0, firstgY = 0;
-        //if(u === 0){
-        //	firstgX = gX;
-        //	firstgY = gY;
-        //	u++;
-       // };
-     /*  if(firstgX > 0){  //calculating the domain(-1 to 1) with the starting point as 0
+        
+        var firstgX = 0, firstgY = 0;
+        if(u === 0){
+        	firstgX = gX;
+        	firstgY = gY;
+        	u++;
+        }
+      if(firstgX > 0){  
           if(gX >= firstgX || gX <= -(1 - firstgX)){
 	     if(gX >= firstgX){
 	         newX = bodyX * ( (1 - firstgX ) - (1 - Math.abs(gX)))}
@@ -164,14 +164,14 @@ function SpiritLevelProcessor()
 
         	}
 }
-   */  //==================================================================================================   
-       // newerX = newX - tempX;
-       // newerY = newY - tempX;
-       // tempX = newX;
-       //tempY = newY;
+   
+        newerX = newX - tempX;
+        newerY = newY - tempX;
+        tempX = newX;
+       tempY = newY;
        
        
-      //  uiController.bubbleTranslate(newerX, newerY, "dark-bubble");
+       uiController.bubbleTranslate(newerX, newerY, "dark-bubble");
         
         
       
@@ -284,4 +284,3 @@ function SpiritLevelProcessor()
       //      This function should return the result of the moving average filter
    // }
 }
-

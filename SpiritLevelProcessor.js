@@ -212,12 +212,12 @@ function SpiritLevelProcessor()
         currentX = tempX;
         currentY = tempY;
     	if(onoff === 0){
-    	    u++;
+    	    onoff++;
     	    
     	}
     	else{
     	    uiController.bubbleTranslate((currentX - tempX),(currentY - tempY), "pale-bubble");
-    	    u = u - 1;
+    	    onoff = onoff - 1;
     	}
         // ADVANCED FUNCTIONALITY
         // ================================================================

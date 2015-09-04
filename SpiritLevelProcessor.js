@@ -65,7 +65,7 @@ function SpiritLevelProcessor()
     {
         var aX, aY, aZ;
         var gX, gY, gZ;
-        var movingAverageX = 0, movingAverageY = 0, movingAverageZ = 0;
+        var movingMedianX = 0, movingMedianY = 0, movingMedianZ = 0;
         //var aValues;
         // This function handles the new incoming values from the accelerometer
         aX = event.accelerationIncludingGravity.x;
@@ -75,16 +75,16 @@ function SpiritLevelProcessor()
         gX = aX/9.8;
         gY = aY/9.8;
         gZ = aZ/9.8;
-        
+        var u = 0;
         aValues = [gX, gY, gZ];
         
-        movingAverageX = movingAverage(bufferX,gX);
-        movingAverageY = movingAverage(bufferY,gY);
-        movingAverageZ = movingAverage(bufferZ,gZ);
+        movingMedianX = movingMedian(bufferX,gX);
+        movingMedianY = movingMedian(bufferY,gY);
+        movingMedianZ = movingMedian(bufferZ,gZ);
         
-		console.log([movingAverageX,movingAverageY,movingAverageZ])
+		console.log([movingMedianX,movingMedianY,movingMedianZ])
 		
-		displayAngle(movingAverageX, movingAverageY, movingAverageZ);
+		displayAngle(movingMedianX, movingMedianY, movingMedianZ);
        
         //bubbleTranslate code=================================================================================
         var newX = 0, newY = 0;
@@ -203,12 +203,19 @@ function SpiritLevelProcessor()
 
     self.freezeClick = function()
     {
-    	
-    	
+    	if(u === 0){
+    	u++
+    	}
         // ADVANCED FUNCTIONALITY
         // ================================================================
         // This function will trigger when the "Freeze" button is pressed
         // The ID of the button is "freeze-button"
+        else{ 
+        
+        
+        	u = 0
+        	
+        }
     }
 
     function movingMedian(buffer, newValue)
@@ -218,7 +225,7 @@ function SpiritLevelProcessor()
         var middle;
         var movingaMedian;
 		var tempBuffer = 0;
-        
+        var temp2Buffer;
         buffer.push(value_update)
        
         
@@ -226,8 +233,10 @@ function SpiritLevelProcessor()
    
             buffer.splice(0, 1);
             }
-        
-		tempBuffer = buffer;
+            for(i = 0; i< 10; i++){
+        tempBuffer[i] = buffer[i];
+            }
+		
         tempBuffer.sort(function(a,b){return a-b});
         
         middle = tempBuffer.length/2;
@@ -237,6 +246,9 @@ function SpiritLevelProcessor()
             }
             else {
                 movingaMedian = tempBuffer[middle-0.5];
+            }
+            for(i = 0; i< 10; i++){
+         buffer[i] = temp2Buffer[i];
             }
 
          return movingaMedian;

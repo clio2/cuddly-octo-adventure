@@ -233,10 +233,10 @@ function SpiritLevelProcessor()
         middle = tempBuffer.length/2;
         
             if (tempBuffer.length % 2 === 0){
-                movingaMedian = (tempBuffer[middle] + tempBuffer[middle+1]) / 2;
+                movingaMedian = (tempBuffer[middle] + tempBuffer[middle-1]) / 2;
             }
             else {
-                movingaMedian = tempBuffer[middle+0.5];
+                movingaMedian = tempBuffer[middle-0.5];
             }
 
          return movingaMedian;

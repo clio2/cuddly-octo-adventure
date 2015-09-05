@@ -84,8 +84,8 @@ function SpiritLevelProcessor()
         //bubbleTranslate code=================================================================================
         var newX, newY;
         var bodyDimension = uiController.bodyDimensions();
-        var bodyHalfWidth = bodyDi.width / 2;
-        var bodyHalfHeight = bodyDi.height / 2;
+        var bodyHalfWidth = bodyDimension.width / 2;
+        var bodyHalfHeight = bodyDimension.height / 2;
         var locationX, locationY;
         var tempX = 0;
         var tempY = 0;

@@ -1,6 +1,6 @@
 /****************************************************************************************
 Avaiable functions for usage in the uiController object
-==========dfsfsdfsdfsfddsfdfdf======================================================
+================================================================
 uiController.bubbleTranslate(x,y, id)
     This function will translate the bubble from the middle of the screen.
     The center of the screen is considered (0,0).
@@ -43,20 +43,7 @@ function SpiritLevelProcessor()
     var self = this;
 
     var uiController = null;
-    
-    var buffer = [0, 0, 0];
- 
-    var aValues;
-    var filteredValue;
-    var newArray = {
-        x: buffer[0],
-        y: buffer[1],
-        z: buffer[2]
-    };
-        
-    console.log(filteredValue);
-    
-    
+
     self.initialise = function(controller)
     {
         uiController = controller;
@@ -68,7 +55,15 @@ function SpiritLevelProcessor()
     {
         var aX, aY, aZ;
         var gX, gY, gZ;
-        //var aValues;
+        
+        var bufferX = [];
+        var bufferY = [];
+        var bufferZ = [];
+        var filteredValueX, filteredValueY, filteredValueZ;
+        
+        var onoff = 0;
+	    var angleFreeze;
+        
         // This function handles the new incoming values from the accelerometer
         aX = event.accelerationIncludingGravity.x;
         aY = event.accelerationIncludingGravity.y;
@@ -77,19 +72,97 @@ function SpiritLevelProcessor()
         gX = aX/9.8;
         gY = aY/9.8;
         gZ = aZ/9.8;
+        
+        filteredValueX = movingMedian(bufferX,gX);
+        filteredValueY = movingMedian(bufferY,gY);
+        filteredValueZ = movingMedian(bufferZ,gZ);
+        
+		console.log([filteredValueX,filteredValueY,filteredValueZ])
+		
+		displayAngle(filteredValueX, filteredValueY, filteredValueZ);
+       
+        //bubbleTranslate code=================================================================================
+        var newX, newY;
+        var bodyDimension = uiController.bodyDimensions();
+        var bodyHalfWidth = bodyDi.width / 2;
+        var bodyHalfHeight = bodyDi.height / 2;
+        var locationX, locationY;
+        var tempX = 0;
+        var tempY = 0;
+        var tempFilteredX, tempFilteredY, tempFilteredZ;
+
+        //these temps ensure no change to the filtervalues 
+		tempFilteredX = filteredValueX;
+		tempFilteredY = filteredValueY;
+		tempFilteredZ = filteredValueZ;
+        
+	   //just in case it goes over the limit [-1,1] which it will.. cause it favours a bit to right for some reason	
+        if(filteredValueX > 1){	
+			tempFilteredX = 1;
+		}
+        
+        if(filteredValueX < -1){
+			tempFilteredX = -1
+		}
+        
+		if(filteredValueY > 1){		
+			tempFilteredY = 1;
+		}
+        
+        if(filteredValueY < -1){
+			tempFilteredY = -1
+		}
+        
+	//since the code start (0,0)
+	//the range act as a factor for the translations
+        newX = bodyHalfWidth * tempFilteredX;
+        newY = -(bodyHalfHeight * tempFilteredY);
+   
+   //tempX amd tempY will acts as the previous location and translates from there
+        locationX = newX - tempX;
+        locationY = newY - tempX;
+        tempX = newX;
+        tempY = newY;
+       
+       
+      if(onoff === 0){
+       uiController.bubbleTranslate(locationX, locationY, "dark-bubble");
+       uiController.bubbleTranslate(locationX, locationY, "pale-bubble");
+       }
+       else{
+             uiController.bubbleTranslate(locationX, locationY, "dark-bubble");
            
-        aValues = [gX, gY, gZ];
+       }
+        //=========================================================================================================
         
-        filteredValue = movingAverage(buffer, aValues);
-        console.log(filteredValue);
-        
-        
+      
     }
 
     function movingAverage(buffer, newValue)
     {
+        var valueUpdate = newValue;
+        var total;
+        var filteredAverage;
+		
         
-        newArray.x +=
+        buffer.push(valueUpdate)
+       
+        
+        if(buffer.length > 20){
+   
+            buffer.splice(0,1);
+            
+			
+        };
+        for(var i = 0; i < buffer.length; i++){
+            total += buffer[i];
+           
+        };
+    
+        filteredAverage = total / buffer.length;
+        
+        
+        return filteredAverage;
         // This function handles the Moving Average Filter
 
         // Input:
@@ -104,10 +177,6 @@ function SpiritLevelProcessor()
         
         
         
-        
-        return newArray
-        
-        
     }
 
     function displayAngle(x,y,z)
@@ -118,10 +187,47 @@ function SpiritLevelProcessor()
         // Input: x,y,z
         //      These values should be the filtered values after the Moving Average for
         //      each of the axes respectively
+		          var target = document.getElementById("message-area");
+
+            var angleZ;
+         
+            var outString="";
+            
+            var x2 = Math.pow(x,2);
+            var y2 = Math.pow(y,2);
+            var z2 = Math.pow(z,2);
+            Fg = Math.sqrt(x2 + y2 + z2)
+            
+    
+            angleZ = (Math.acos(z/Fg) * 180) / Math.PI;
+            
+             
+            outString += angleZ.toFixed(2) + " degrees from the z axis." + "<br/>";
+            
+            target.innerHTML= outString;
     }
 
     self.freezeClick = function()
     {
+		var target = document.getElementById("message-area")
+		var outString="";
+        var currentX = tempX;
+        var currentY = tempY;
+		var currentZ = tempZ;
+    	if(onoff === 0){
+    	    onoff++;
+    	    if(currentX === locationX || currentY === locationY || currentZ === newerZ){
+				
+				angleFreeze = displayAngle(currentX,currentY,currentZ)
+				outString += angleFreeze.toFixed(2) + "Same Level" + "<br/>";
+				target.innerHTML = outString;
+				
+			}
+    	}
+    	else{
+    	    uiController.bubbleTranslate((tempX - currentX),(tempY - currentY), "pale-bubble");
+    	    onoff = onoff - 1;
+    	}
         // ADVANCED FUNCTIONALITY
         // ================================================================
         // This function will trigger when the "Freeze" button is pressed
@@ -130,7 +236,40 @@ function SpiritLevelProcessor()
 
     function movingMedian(buffer, newValue)
     {
-      // ADVANCED FUNCTIONALITY
+        var valueUpdate = newValue;
+        var middleValue;
+        var filteredMedian;
+		var tempBuffer = [];
+        
+        buffer.push(valueUpdate)
+       
+        
+        if(buffer.length > 10){
+   
+            buffer.splice(0, 2);
+            }
+        
+        for(var i = 0; i < buffer.length; i++){
+		tempBuffer[i] = buffer[i];
+        }
+        
+        
+        tempBuffer.sort(function(a,b){return a-b});
+        
+        middleValue = tempBuffer.length/2;
+        
+            if (tempBuffer.length % 2 === 0){
+                filteredMedian = (tempBuffer[middleValue] + tempBuffer[middleValue-1]) / 2;
+            }
+            else {
+                filteredMedian = tempBuffer[middleValue-0.5];
+            }
+
+         return filteredMedian;
+	}
+         
+         
+      //ADVANCED FUNCTIONALITY
       // =================================================================
       // This function handles the Moving Median Filter
       // Input:
@@ -142,6 +281,5 @@ function SpiritLevelProcessor()
 
       // Output: filteredValue
       //      This function should return the result of the moving average filter
-    }
+   // }
 }
-

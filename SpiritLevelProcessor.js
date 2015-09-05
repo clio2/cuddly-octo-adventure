@@ -52,7 +52,9 @@ function SpiritLevelProcessor()
     var filteredValue;
     
     var onoff = 0;
-    var u = 0;
+    var tempX = 0, tempY = 0, tempZ=0;
+    var currentX = 0,currentY = 0, currentZ=0;
+	var angleFreeze;
 
     self.initialise = function(controller)
     {
@@ -78,101 +80,62 @@ function SpiritLevelProcessor()
         
         aValues = [gX, gY, gZ];
         
-        movingAverageX = movingAverage(bufferX,gX);
-        movingAverageY = movingAverage(bufferY,gY);
-        movingAverageZ = movingAverage(bufferZ,gZ);
+        movingAverageX = movingMedian(bufferX,gX);
+        movingAverageY = movingMedian(bufferY,gY);
+        movingAverageZ = movingMedian(bufferZ,gZ);
         
-        filteredValue = [movingAverageX, movingAverageY, movingAverageZ];
-        
-        console.log(filteredValue);
+		console.log([movingAverageX,movingAverageY,movingAverageZ])
+		
+		displayAngle(movingAverageX, movingAverageY, movingAverageZ);
        
-        //bubbleTranslate code
+        //bubbleTranslate code=================================================================================
         var newX = 0, newY = 0;
         var bodyDi = uiController.bodyDimensions();
         var bodyX = bodyDi.width / 2;
         var bodyY = bodyDi.height / 2;
         var newerX = 0, newerY = 0, tempX = 0, tempY = 0;
-       
-        
-        
-        var firstgX = 0, firstgY = 0;
-        if(u === 0){
-        	firstgX = gX;
-        	firstgY = gY;
-        	u++;
-        }
-      if(firstgX > 0){  
-          if(gX >= firstgX || gX <= -(1 - firstgX)){
-	     if(gX >= firstgX){
-	         newX = bodyX * ( (1 - firstgX ) - (1 - Math.abs(gX)))}
-
-             else{newX = bodyX * ((1 - Math.abs(gX)) + (1 - firstgX ))}
-
-}
-          else{newX = bodyX * -((1 -gX) - (1 - firstgX ))}
-
-}
-
-      else{
-	if(gX >= firstgX && gX <= (1 + firstgX)){
-	  if(gX >= firstgX){
-	    newX = bodyX * -( (0 + firstgX ) + (0 - gX))}
-
-          else{newX = bodyX * ((1 - Math.abs(gX)) + (1 - firstgX ))}
-
-}
-         else{
-		if(gX > 0){
-		newX = bodyX * -((1 - gX) + (1 + firstgX ))
-	}
-	        else{
-   		newX = bodyX * ((1 + gX) + -( 1 + firstgX ))}
-
-	}
-}
-       
-       if(firstgY > 0){
-	   if(gY >= firstgY || gY <= -(1 - firstgY)){
-	      if(gY >= firstgY){
-            	newY = bodyY * ( (1 - firstgY ) - (1 - Math.abs(gY)))
-	      	
-	      }
-
-              else{newY = bodyY * ((1 - Math.abs(gY)) + (1 - firstgY ))
-              	
-              }
-
-            }
-           else{newY = bodyY * -((1 -gY) - (1 - firstgY ))}
-
-           }
-
-      else{
-	if(gY >= firstgY && gY <= (1 + firstgY)){
-	  if(gY >= firstgY){
-	    newY = bodyY * -( (0 + firstgY ) + (0 - gY))}
-
-          else{newY = bodyY * ((1 - Math.abs(gY)) + (1 - firstgY ))}
-
-        }
-        else{
-		if(gY > 0){
-		newY = bodyY * -((1 - gY) + (1 + firstgY ))
-        	}
-          	else{
-		newY = bodyY * ((1 + gY) + -( 1 + firstgY ))}
-
-        	}
-}
+        var tempAverageX, tempAverageY, tempAverageZ;
+		var newerZ = 0, tempZ = 0; // For calculating freeze button
+        //these temps ensure no change to the filtervalues 
+		tempAverageX = movingAverageX;
+		tempAverageY = movingAverageY;
+		tempAverageZ = movingAverageZ
+	//just in case it goes over the limit [-1,1] which it will.. cause it favours a bit to right for some reason	
+        if(movingAverageX > 1){
+		
+			tempAverageX = 1;
+		}
+        if(movingAverageX < -1){
+			tempAverageX = -1
+		}
+		if(movingAverageY > 1){
+		
+			tempAverageY = 1;
+		}
+        if(movingAverageY < -1){
+			tempAverageY = -1
+		}
+	//since the code start (0,0)
+	//the range act as a factor for the translations
+        newX = bodyX * tempAverageX;
+        newY = -(bodyY * tempAverageY);
    
+   //tempX amd tempY will acts as the previous location and translates from there
         newerX = newX - tempX;
         newerY = newY - tempX;
         tempX = newX;
-       tempY = newY;
+        tempY = newY;
        
        
+      if(onoff === 0){
        uiController.bubbleTranslate(newerX, newerY, "dark-bubble");
-        
+       uiController.bubbleTranslate(newerX, newerY, "pale-bubble");
+       }
+       else{
+             uiController.bubbleTranslate(newerX, newerY, "dark-bubble");
+           
+       }
+        //=========================================================================================================
         
       
     }
@@ -187,7 +150,7 @@ function SpiritLevelProcessor()
         buffer.push(value_update)
        
         
-        if(buffer.length > 30){
+        if(buffer.length > 20){
    
             buffer.splice(0,1);
             
@@ -226,48 +189,87 @@ function SpiritLevelProcessor()
         // Input: x,y,z
         //      These values should be the filtered values after the Moving Average for
         //      each of the axes respectively
+		          var target = document.getElementById("message-area");
+
+            var angleZ;
+         
+            var outString="";
+            
+            var x2 = Math.pow(x,2);
+            var y2 = Math.pow(y,2);
+            var z2 = Math.pow(z,2);
+            Fg = Math.sqrt(x2 + y2 + z2)
+            
+    
+            angleZ = (Math.acos(z/Fg) * 180) / Math.PI;
+            
+           
+    
+            outString += angleZ.toFixed(2) + " degrees from the z axis." + "<br/>";
+            
+            target.innerHTML= outString;
     }
 
     self.freezeClick = function()
     {
+		var target = document.getElementById("message-area")
+		var outString="";
+        currentX = tempX;
+        currentY = tempY;
+		currentZ = tempZ;
     	if(onoff === 0){
-    		window.removeEventListener("devicemotion", handleMotion);
-    		onoff ++;
+    	    onoff++;
+    	    if(currentX === newerX || currentY === newerY || currentZ === newerZ){
+				
+				angleFreeze = displayAngle(currentX,currentY,currentZ)
+				outString += angleFreeze.toFixed(2) + "Same Level" + "<br/>";
+				target.innerHTML = outString;
+				
+			}
     	}
     	else{
-    		SpiritLevelProcessor.initialise;
-    		onoff = 0;
+    	    uiController.bubbleTranslate((tempX - currentX),(tempY - currentY), "pale-bubble");
+    	    onoff = onoff - 1;
     	}
-    	
         // ADVANCED FUNCTIONALITY
         // ================================================================
         // This function will trigger when the "Freeze" button is pressed
         // The ID of the button is "freeze-button"
     }
 
-    /*function movingMedian(buffer, newValue)
+    function movingMedian(buffer, newValue)
     {
+        var valueUpdate = newValue;
+        var middleValue;
+        var filteredMedian;
+		var tempBuffer = [];
         
-        var value_update = newValue;
-        var middle = 0;
-        var movingMedian = 0;
-		
-        
-        buffer.push(value_update)
+        buffer.push(valueUpdate)
        
         
-        if(buffer.length > 30){
+        if(buffer.length > 10){
    
-            buffer = buffer.slice(1);
-            };
-        buffer.sort(function(a,b){return a-b});
-        middle=parseInt(buffer.length/2);
-            if (buffer.length%2==1){
-                movingMedian = buffer[middle];}
-            else 
-            {movingMedian = (buffer[middle+1] + buffer[middle]) /2;
+            buffer.splice(0, 2);
             }
-         return movingMedian;} */
+        
+        for(var i = 0; i < buffer.length; i++){
+		tempBuffer[i] = buffer[i];
+        }
+        
+        
+        tempBuffer.sort(function(a,b){return a-b});
+        
+        middleValue = tempBuffer.length/2;
+        
+            if (tempBuffer.length % 2 === 0){
+                filteredMedian = (tempBuffer[middleValue] + tempBuffer[middleValue-1]) / 2;
+            }
+            else {
+                filteredMedian = tempBuffer[middleValue-0.5];
+            }
+
+         return filteredMedian;
+	}
          
          
       //ADVANCED FUNCTIONALITY
@@ -284,3 +286,4 @@ function SpiritLevelProcessor()
       //      This function should return the result of the moving average filter
    // }
 }
+

@@ -127,7 +127,7 @@ function SpiritLevelProcessor()
    
    //tempX amd tempY will acts as the previous location and translates from there
         locationX = newX - tempX;
-        locationY = newY - tempX;
+        locationY = newY - tempY;
         tempX = newX;
         tempY = newY;
        
@@ -221,7 +221,7 @@ function SpiritLevelProcessor()
 		var currentZ = tempZ;
     	if(onoff === 0){
     	    onoff++;
-    	    if(currentX === locationX || currentY === locationY || currentZ === newerZ){
+    	    if(currentX === tempFilteredX || currentY === tempFilteredY || currentZ === tempFilteredZ){
 				
 				angleFreeze = displayAngle(currentX,currentY,currentZ)
 				outString += angleFreeze.toFixed(2) + "Same Level" + "<br/>";

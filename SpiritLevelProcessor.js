@@ -43,6 +43,16 @@ function SpiritLevelProcessor()
     var self = this;
 
     var uiController = null;
+    
+    var bufferX = [];
+    var bufferY = [];
+    var bufferZ = [];
+    
+    var onoff = 0;
+    var angleFreeze;
+    
+    var tempX = 0;
+    var tempY = 0;
 
     self.initialise = function(controller)
     {
@@ -56,13 +66,7 @@ function SpiritLevelProcessor()
         var aX, aY, aZ;
         var gX, gY, gZ;
         
-        var bufferX = [];
-        var bufferY = [];
-        var bufferZ = [];
         var filteredValueX, filteredValueY, filteredValueZ;
-        
-        var onoff = 0;
-	    var angleFreeze;
         
         // This function handles the new incoming values from the accelerometer
         aX = event.accelerationIncludingGravity.x;
@@ -87,8 +91,6 @@ function SpiritLevelProcessor()
         var bodyHalfWidth = bodyDimension.width / 2;
         var bodyHalfHeight = bodyDimension.height / 2;
         var locationX, locationY;
-        var tempX = 0;
-        var tempY = 0;
         var tempFilteredX, tempFilteredY, tempFilteredZ;
 
         //these temps ensure no change to the filtervalues 
@@ -185,7 +187,7 @@ function SpiritLevelProcessor()
         // Input: x,y,z
         //      These values should be the filtered values after the Moving Average for
         //      each of the axes respectively
-		          var target = document.getElementById("message-area");
+		    var target = document.getElementById("message-area");
 
             var angleZ;
          
@@ -194,7 +196,7 @@ function SpiritLevelProcessor()
             var x2 = Math.pow(x,2);
             var y2 = Math.pow(y,2);
             var z2 = Math.pow(z,2);
-            Fg = Math.sqrt(x2 + y2 + z2)
+            var Fg = Math.sqrt(x2 + y2 + z2)
             
     
             angleZ = (Math.acos(z/Fg) * 180) / Math.PI;

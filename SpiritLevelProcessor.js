@@ -62,7 +62,7 @@ function SpiritLevelProcessor()
         var filteredValueX, filteredValueY, filteredValueZ;
         
         var onoff = 0;
-	var angleFreeze;
+	    var angleFreeze;
         
         // This function handles the new incoming values from the accelerometer
         aX = event.accelerationIncludingGravity.x;
@@ -77,9 +77,9 @@ function SpiritLevelProcessor()
         filteredValueY = movingMedian(bufferY,gY);
         filteredValueZ = movingMedian(bufferZ,gZ);
         
-	console.log([filteredValueX,filteredValueY,filteredValueZ])
+		console.log([filteredValueX,filteredValueY,filteredValueZ])
 		
-	displayAngle(filteredValueX, filteredValueY, filteredValueZ);
+		displayAngle(filteredValueX, filteredValueY, filteredValueZ);
        
         //bubbleTranslate code=================================================================================
         var newX, newY;
@@ -92,26 +92,26 @@ function SpiritLevelProcessor()
         var tempFilteredX, tempFilteredY, tempFilteredZ;
 
         //these temps ensure no change to the filtervalues 
-	tempFilteredX = filteredValueX;
-	tempFilteredY = filteredValueY;
-	tempFilteredZ = filteredValueZ;
+		tempFilteredX = filteredValueX;
+		tempFilteredY = filteredValueY;
+		tempFilteredZ = filteredValueZ;
         
 	   //just in case it goes over the limit [-1,1] which it will.. cause it favours a bit to right for some reason	
         if(filteredValueX > 1){	
-		tempFilteredX = 1;
-	}
+			tempFilteredX = 1;
+		}
         
         if(filteredValueX < -1){
-		tempFilteredX = -1
-	}
+			tempFilteredX = -1
+		}
         
-	if(filteredValueY > 1){		
-		tempFilteredY = 1;
-	}
+		if(filteredValueY > 1){		
+			tempFilteredY = 1;
+		}
         
         if(filteredValueY < -1){
-		tempFilteredY = -1
-	}
+			tempFilteredY = -1
+		}
         
 	//since the code start (0,0)
 	//the range act as a factor for the translations
@@ -129,10 +129,10 @@ function SpiritLevelProcessor()
        uiController.bubbleTranslate(locationX, locationY, "dark-bubble");
        uiController.bubbleTranslate(locationX, locationY, "pale-bubble");
        }
-       	else{
+       else{
              uiController.bubbleTranslate(locationX, locationY, "dark-bubble");
            
-        }
+       }
         //=========================================================================================================
         
       
@@ -148,14 +148,13 @@ function SpiritLevelProcessor()
         buffer.push(valueUpdate)
        
         
-        if(buffer.length > 20){
-   
-            buffer.splice(0,1);
-            
-			
+        if(buffer.length > 20){ 
+            buffer.splice(0,1);          			
         };
+        
         for(var i = 0; i < buffer.length; i++){
             total += buffer[i];
+           
         };
     
         filteredAverage = total / buffer.length;
@@ -186,34 +185,33 @@ function SpiritLevelProcessor()
         // Input: x,y,z
         //      These values should be the filtered values after the Moving Average for
         //      each of the axes respectively
-	var target = document.getElementById("message-area");
+		          var target = document.getElementById("message-area");
 
-        var angleZ;
+            var angleZ;
          
-        var outString="";
+            var outString="";
             
-        var x2 = Math.pow(x,2);
-        var y2 = Math.pow(y,2);
-        var z2 = Math.pow(z,2);
-        var Fg = Math.sqrt(x2 + y2 + z2)
+            var x2 = Math.pow(x,2);
+            var y2 = Math.pow(y,2);
+            var z2 = Math.pow(z,2);
+            Fg = Math.sqrt(x2 + y2 + z2)
             
     
-        angleZ = (Math.acos(z/Fg) * 180) / Math.PI;
+            angleZ = (Math.acos(z/Fg) * 180) / Math.PI;
             
              
-        outString += angleZ.toFixed(2) + " degrees from the z axis." + "<br/>";
+            outString += angleZ.toFixed(2) + " degrees from the z axis." + "<br/>";
             
-        target.innerHTML= outString;
+            target.innerHTML= outString;
     }
 
     self.freezeClick = function()
     {
-	var target = document.getElementById("message-area")
-	var outString="";
+		var target = document.getElementById("message-area")
+		var outString="";
         var currentX = tempX;
         var currentY = tempY;
-	var currentZ = tempZ;
-	
+		var currentZ = tempZ;
     	if(onoff === 0){
     	    onoff++;
     	    if(currentX === locationX || currentY === locationY || currentZ === newerZ){
@@ -239,7 +237,7 @@ function SpiritLevelProcessor()
         var valueUpdate = newValue;
         var middleValue;
         var filteredMedian;
-	var tempBuffer = [];
+		var tempBuffer = [];
         
         buffer.push(valueUpdate)
        

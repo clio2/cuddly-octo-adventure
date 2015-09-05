@@ -94,8 +94,6 @@ function SpiritLevelProcessor()
         var bodyHalfWidth = bodyDimension.width / 2;
         var bodyHalfHeight = bodyDimension.height / 2;
         var locationX, locationY;
-        var tempX = 0;
-        var tempY = 0;
         var tempFilteredX, tempFilteredY, tempFilteredZ;
 
         //these temps ensure no change to the filtervalues 
@@ -125,11 +123,10 @@ function SpiritLevelProcessor()
         newX = bodyHalfWidth * tempFilteredX;
         newY = -(bodyHalfHeight * tempFilteredY);
    
-   //tempX amd tempY will acts as the previous location and translates from there
-        locationX = newX - tempX;
-        locationY = newY - tempY;
-        tempX = newX;
-        tempY = newY;
+   //new location for bubble to move
+        locationX = newX;
+        locationY = newY;
+   
        
        
       if(onoff === 0){

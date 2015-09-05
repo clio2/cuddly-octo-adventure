@@ -73,9 +73,9 @@ function SpiritLevelProcessor()
         gY = aY/9.8;
         gZ = aZ/9.8;
         
-        filteredValueX = movingMedian(bufferX,gX);
-        filteredValueY = movingMedian(bufferY,gY);
-        filteredValueZ = movingMedian(bufferZ,gZ);
+        filteredValueX = movingMedian(bufferX, gX);
+        filteredValueY = movingMedian(bufferY, gY);
+        filteredValueZ = movingMedian(bufferZ, gZ);
         
 		console.log([filteredValueX,filteredValueY,filteredValueZ])
 		
@@ -141,7 +141,7 @@ function SpiritLevelProcessor()
     function movingAverage(buffer, newValue)
     {
         var valueUpdate = newValue;
-        var total;
+        var total = 0;
         var filteredAverage;
 		
         

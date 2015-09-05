@@ -43,16 +43,6 @@ function SpiritLevelProcessor()
     var self = this;
 
     var uiController = null;
-    
-    var bufferX = [];
-    var bufferY = [];
-    var bufferZ = [];
-    
-    var onoff = 0;
-    var angleFreeze;
-    
-    var tempX = 0;
-    var tempY = 0;
 
     self.initialise = function(controller)
     {
@@ -66,7 +56,13 @@ function SpiritLevelProcessor()
         var aX, aY, aZ;
         var gX, gY, gZ;
         
+        var bufferX = [];
+        var bufferY = [];
+        var bufferZ = [];
         var filteredValueX, filteredValueY, filteredValueZ;
+        
+        var onoff = 0;
+	    var angleFreeze;
         
         // This function handles the new incoming values from the accelerometer
         aX = event.accelerationIncludingGravity.x;
@@ -91,6 +87,8 @@ function SpiritLevelProcessor()
         var bodyHalfWidth = bodyDimension.width / 2;
         var bodyHalfHeight = bodyDimension.height / 2;
         var locationX, locationY;
+        var tempX = 0;
+        var tempY = 0;
         var tempFilteredX, tempFilteredY, tempFilteredZ;
 
         //these temps ensure no change to the filtervalues 

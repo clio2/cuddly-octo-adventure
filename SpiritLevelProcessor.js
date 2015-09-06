@@ -217,7 +217,6 @@ function SpiritLevelProcessor()
       //      newValue - the newest value that will be pushed into the buffer
 
       // Output: filteredValue - returns the result of the moving median filter
-      // NOTE: Jerky motion when using this function for some reason
         
         var tempBuffer = [];
         var valueUpdate = newValue;

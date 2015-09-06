@@ -43,13 +43,12 @@ function SpiritLevelProcessor()
     var self = this;
 
     var uiController = null;
-    //Making empty buffer arrays for coordinates x y z values within object buffe  
+    //Making empty buffer arrays for coordinates x y z values within object buffer 
     var bufferX = [];
     var bufferY = [];
     var bufferZ = [];
     
     // Used for the freeze function
-	var onOff = 0;
 	var angleFreeze;
     var locationX;
     var locationY;
@@ -57,7 +56,7 @@ function SpiritLevelProcessor()
     //Creating variable for writing messages in message area
     var messageArea = document.getElementById("message-area");
     
-    //Freeze button to change
+    //Freeze button to change name
     var buttonFreeze = document.getElementById("freeze-button");
     
     //Variable for Intial freeze therefore freeze being false would be its 'true'
@@ -127,7 +126,7 @@ function SpiritLevelProcessor()
 		
             
       //Outputting angles and 'freezes' to message area (change to moving Median angle by changing to angleDisplay2)
-		 messageArea.innerHTML = "Angle: " + angleDisplay.toFixed(2) + "\xB0"  + "<br/>" + "Captured Angle: " + stringAngle;  
+		 messageArea.innerHTML = "Angle: " + angleDisplay.toFixed(2) + "\xB0"  + "<br/>" + "Frozen Angle: " + stringAngle;  
     }
 
     function movingAverage(buffer, newValue)
@@ -139,30 +138,24 @@ function SpiritLevelProcessor()
         //      newValue - the newest value that will pushed into the buffer
 
         // Output: filteredAverage - returns the filtered value
-
-    
         var valueUpdate = newValue;
         var total = 0;
         var filteredAverage;
-		
-        
+		//Storing values into buffer
         buffer.push(valueUpdate)
-       
-        
+        //Checks to see if buffer length is greater than 20 and if so gets rid of the first index
         if(buffer.length > 20){ 
             buffer.splice(0,1);          			
         };
         
         for(var i = 0; i < buffer.length; i++){
             total += buffer[i];
-           
         };
     
         filteredAverage = total / buffer.length;
-        
-        
+         
         return filteredAverage;    
-    }
+    } 
     
     function displayAngle(x,y,z)
     {
@@ -172,6 +165,7 @@ function SpiritLevelProcessor()
         // Input: x,y,z
         //      These values are the filtered values after the moving average or median for
         //      each of the axes respectively
+        //Setting variables
         var angle;   
         var x2 = Math.pow(x,2);
         var y2 = Math.pow(y,2);
@@ -198,7 +192,7 @@ function SpiritLevelProcessor()
         else {
 		buttonFreeze.innerHTML = "Refresh"
 		freeze = true;
-        uiController.bubbleTranslate(locationX, locationY, "pale-bubble");  //Captures last angle(Moving Median is xTransM,yTransM)
+        uiController.bubbleTranslate(locationX, locationY, "pale-bubble");  //Captures last angle
         stringAngle = angleDisplay.toFixed(2) + "\xB0" //Changes stringAngle outputted to Angle 
         }
     }
@@ -213,26 +207,26 @@ function SpiritLevelProcessor()
 
       // Output: filteredValue - returns the result of the moving median filter
       // NOTE: Jerky motion when using this function for some reason
-        
+        //Setting variables
         var tempBuffer = [];
         var valueUpdate = newValue;
         var middleOfArray;
         var filteredMedian;
-        
+        //Storing new values into buffer
         buffer.push(newValue);
-        
+        //Checks to see if the length is greater than 30 and if so gets rid of the first index
         if(buffer.length > 30){
             buffer.splice(0, 1);
         }
-        
+        //Stores the values of buffer into tempBuffer
         for(var i = 0; i < buffer.length; i++){
             tempBuffer[i] = buffer[i];
         }
-        
+        //Sorts out the array in ascending order(lowest to highest)
         tempBuffer.sort(function(a, b){return a-b});
-        
+        //Gets the middle value
         middleOfArray = tempBuffer.length / 2;
-        
+        //Filters the median value depending whether it is odd or even
         if(tempBuffer.length % 2 === 0)
             filteredMedian = (tempBuffer[middleOfArray] + tempBuffer[middleOfArray - 1]) / 2;
         else

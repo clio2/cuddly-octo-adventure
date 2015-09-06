@@ -84,6 +84,7 @@ function SpiritLevelProcessor()
         gY = aY/9.8;
         gZ = aZ/9.8;
         
+        // Change to moving median here
         filteredValueX = movingAverage(bufferX, gX);
         filteredValueY = movingAverage(bufferY, gY);
         filteredValueZ = movingAverage(bufferZ, gZ);

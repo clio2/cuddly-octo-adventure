@@ -50,9 +50,14 @@ function SpiritLevelProcessor()
     
     // Used for the freeze function
 	var onOff = 0;
-	var angleFreeze;
     var locationX;
     var locationY;
+    var angleFromZ;
+    
+    // to change text inside these ids
+    var buttonFreeze = document.getElementById("freeze-button");
+    var messageArea = document.getElementById("message-area");
+    var freezeAngle;
 
     self.initialise = function(controller)
     {
@@ -67,7 +72,7 @@ function SpiritLevelProcessor()
         var gX, gY, gZ;
         
      	var filteredValueX, filteredValueY, filteredValueZ;
-        var angleFromZ;
+
         
         // This function handles the new incoming values from the accelerometer
         aX = event.accelerationIncludingGravity.x;
@@ -109,9 +114,12 @@ function SpiritLevelProcessor()
         if(onOff === 0){
             uiController.bubbleTranslate(locationX, locationY, "dark-bubble")
             uiController.bubbleTranslate(locationX, locationY, "pale-bubble")
+                         
+            messageArea.innerHTML = "Angle from Z: " + angleFromZ.toFixed(2) + "\xB0"  + "<br/>";   
         }
         else{
-            uiController.bubbleTranslate(locationX, locationY, "dark-bubble")
+            uiController.bubbleTranslate(locationX, locationY, "dark-bubble");
+            messageArea.innerHTML = "Angle from Z: " + angleFromZ.toFixed(2) + "\xB0"  + "<br/>" + "Frozen Angle: " + freezeAngle + "\xB0";     
 		}
             
         
@@ -159,8 +167,6 @@ function SpiritLevelProcessor()
         // Input: x,y,z
         //      These values are the filtered values after the moving average or median for
         //      each of the axes respectively
-        
-        var target = document.getElementById("message-area");
 
         var angleZ;
          
@@ -169,16 +175,11 @@ function SpiritLevelProcessor()
         var x2 = Math.pow(x,2);
         var y2 = Math.pow(y,2);
         var z2 = Math.pow(z,2);
-        var Fg = Math.sqrt(x2 + y2 + z2)
+        var Fg = Math.sqrt(x2 + y2 + z2);
             
     
         angleZ = (Math.acos(z/Fg) * 180) / Math.PI;
             
-             
-        outString += angleZ.toFixed(2) + " degrees from the z axis." + "<br/>";
-            
-        target.innerHTML= outString;
-        
         return angleZ;
     }
 
@@ -190,13 +191,20 @@ function SpiritLevelProcessor()
         var freezeLocationY;
     
         if(onOff === 0){
+        	// Freezes the pale button and stores the angle 
             onOff = 1;
             freezeLocationX = locationX;
             freezeLocationY = locationY;
-            uiController.bubbleTranslate(freezeLocationX, freezeLocationY, "pale-bubble")        
+            buttonFreeze.innerHTML = "Unfreeze";
+		    freezeAngle = angleFromZ.toFixed(2)
+            
+            uiController.bubbleTranslate(freezeLocationX, freezeLocationY, "pale-bubble");   
         }
-        else
+        else{
+        	// unfreezes the pale button
             onOff = 0;
+            buttonFreeze.innerHTML = "Freeze";
+        }
     }
 
     function movingMedian(buffer, newValue)

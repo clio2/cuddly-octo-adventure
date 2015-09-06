@@ -43,6 +43,16 @@ function SpiritLevelProcessor()
     var self = this;
 
     var uiController = null;
+    
+    var bufferX = [];
+    var bufferY = [];
+    var bufferZ = [];
+    
+    // Used for the freeze function
+	var onOff = 0;
+	var angleFreeze;
+    var locationX;
+    var locationY;
 
     self.initialise = function(controller)
     {
@@ -50,14 +60,6 @@ function SpiritLevelProcessor()
 
         window.addEventListener("devicemotion", handleMotion);
     }
-	
-	var bufferX = [];
-    var bufferY = [];
-    var bufferZ = [];
-	
-	var onoff = 0;
-	var angleFreeze;
-    
 
     function handleMotion(event)
     {
@@ -65,14 +67,14 @@ function SpiritLevelProcessor()
         var gX, gY, gZ;
         
      	var filteredValueX, filteredValueY, filteredValueZ;
-        
-      
+        var angleFromZ;
         
         // This function handles the new incoming values from the accelerometer
         aX = event.accelerationIncludingGravity.x;
         aY = event.accelerationIncludingGravity.y;
         aZ = event.accelerationIncludingGravity.z;
         
+        // Turn the acceleration values into ratios of gravity
         gX = aX/9.8;
         gY = aY/9.8;
         gZ = aZ/9.8;
@@ -81,69 +83,51 @@ function SpiritLevelProcessor()
         filteredValueY = movingAverage(bufferY, gY);
         filteredValueZ = movingAverage(bufferZ, gZ);
         
-		console.log([filteredValueX,filteredValueY,filteredValueZ])
-		
-		displayAngle(filteredValueX, filteredValueY, filteredValueZ);
-       
-        //bubbleTranslate code=================================================================================
-        var newX, newY;
-        var bodyDimension = uiController.bodyDimensions();
-        var bodyHalfWidth = bodyDimension.width / 2;
-        var bodyHalfHeight = bodyDimension.height / 2;
-        var locationX, locationY;
-        var tempX = 0;
-        var tempY = 0;
-        var tempFilteredX, tempFilteredY, tempFilteredZ;
-
-        //these temps ensure no change to the filtervalues 
-		tempFilteredX = filteredValueX;
-		tempFilteredY = filteredValueY;
-		tempFilteredZ = filteredValueZ;
+        angleFromZ = displayAngle(filteredValueX, filteredValueY, filteredValueZ);
         
-	   //just in case it goes over the limit [-1,1] which it will.. cause it favours a bit to right for some reason	
-        if(filteredValueX > 1){	
-			tempFilteredX = 1;
+        // Bubble translate code
+        var displayDimiensions = uiController.bodyDimensions();
+        var displayHalfWidth = displayDimiensions.width / 2;
+        var displayHalfLength = displayDimiensions.height / 2;
+        
+        // Body constraints (so bubble won't go out of phone)
+        if(filteredValueX > 1)
+            filteredValueX = 1;
+        else if(filteredValueX < -1)
+            filteredValueX = -1;
+        
+        if(filteredValueY > 1)
+            filteredValueY = 1;
+        else if(filteredValueY < -1)
+            filteredValueY = -1;
+        
+        // The location in X and Y where the bubbles will be on the display
+        locationX = displayHalfWidth * filteredValueX;
+        locationY = -(displayHalfLength * filteredValueY);
+        
+        // For the freeze button, if onOff is not = to 0, the pale button will be frozen
+        if(onOff === 0){
+            uiController.bubbleTranslate(locationX, locationY, "dark-bubble")
+            uiController.bubbleTranslate(locationX, locationY, "pale-bubble")
+        }
+        else{
+            uiController.bubbleTranslate(locationX, locationY, "dark-bubble")
 		}
+            
         
-        if(filteredValueX < -1){
-			tempFilteredX = -1
-		}
-        
-		if(filteredValueY > 1){		
-			tempFilteredY = 1;
-		}
-        
-        if(filteredValueY < -1){
-			tempFilteredY = -1
-		}
-        
-	//since the code start (0,0)
-	//the range act as a factor for the translations
-        newX = bodyHalfWidth * tempFilteredX;
-        newY = -(bodyHalfHeight * tempFilteredY);
-   
-   //tempX amd tempY will acts as the previous location and translates from there
-        locationX = newX - tempX;
-        locationY = newY - tempX;
-        tempX = newX;
-        tempY = newY;
-       
-       
-      if(onoff === 0){
-       uiController.bubbleTranslate(locationX, locationY, "dark-bubble");
-       uiController.bubbleTranslate(locationX, locationY, "pale-bubble");
-       }
-       else{
-             uiController.bubbleTranslate(locationX, locationY, "dark-bubble");
-           
-       }
-        //=========================================================================================================
-        
-      
     }
 
     function movingAverage(buffer, newValue)
     {
+        // This function handles the Moving Average Filter
+
+        // Input:
+        //      buffer - the buffer used to smooth out the gravity values.
+        //      newValue - the newest value that will pushed into the buffer
+
+        // Output: filteredAverage - returns the filtered value
+
+    
         var valueUpdate = newValue;
         var total = 0;
         var filteredAverage;
@@ -164,124 +148,92 @@ function SpiritLevelProcessor()
         filteredAverage = total / buffer.length;
         
         
-        return filteredAverage;
-        // This function handles the Moving Average Filter
-
-        // Input:
-        //      buffer
-        //      The buffer in which the function will apply the moving to.
-
-        //      newValue
-        //      This should be the newest value that will be pushed into the buffer
-
-        // Output: filteredValue
-        //      This function should return the result of the moving average filter
-        
-        
-        
+        return filteredAverage;    
     }
-
+    
     function displayAngle(x,y,z)
     {
         // This function will handle the calculation of the angle from the z-axis and
-        // display it on the screen inside a "div" tag with the id of "message-area"
+        // display it on the screen.
 
         // Input: x,y,z
-        //      These values should be the filtered values after the Moving Average for
+        //      These values are the filtered values after the moving average or median for
         //      each of the axes respectively
-		    var target = document.getElementById("message-area");
+        
+        var target = document.getElementById("message-area");
 
-            var angleZ;
+        var angleZ;
          
-            var outString="";
+        var outString="";
             
-            var x2 = Math.pow(x,2);
-            var y2 = Math.pow(y,2);
-            var z2 = Math.pow(z,2);
-            var Fg = Math.sqrt(x2 + y2 + z2)
+        var x2 = Math.pow(x,2);
+        var y2 = Math.pow(y,2);
+        var z2 = Math.pow(z,2);
+        var Fg = Math.sqrt(x2 + y2 + z2)
             
     
-            angleZ = (Math.acos(z/Fg) * 180) / Math.PI;
+        angleZ = (Math.acos(z/Fg) * 180) / Math.PI;
             
              
-            outString += angleZ.toFixed(2) + " degrees from the z axis." + "<br/>";
+        outString += angleZ.toFixed(2) + " degrees from the z axis." + "<br/>";
             
-            target.innerHTML= outString;
+        target.innerHTML= outString;
+        
+        return angleZ;
     }
 
     self.freezeClick = function()
-    {
-		var target = document.getElementById("message-area")
-		var outString="";
-        var currentX = tempX;
-        var currentY = tempY;
-		var currentZ = tempZ;
-    	if(onoff === 0){
-    	    onoff++;
-    	    if(currentX === locationX || currentY === locationY || currentZ === newerZ){
-				
-				angleFreeze = displayAngle(currentX,currentY,currentZ)
-				outString += angleFreeze.toFixed(2) + "Same Level" + "<br/>";
-				target.innerHTML = outString;
-				
-			}
-    	}
-    	else{
-    	    uiController.bubbleTranslate((tempX - currentX),(tempY - currentY), "pale-bubble");
-    	    onoff = onoff - 1;
-    	}
-        // ADVANCED FUNCTIONALITY
-        // ================================================================
+    { 
         // This function will trigger when the "Freeze" button is pressed
-        // The ID of the button is "freeze-button"
+
+		var freezeLocationX;
+        var freezeLocationY;
+    
+        if(onOff === 0){
+            onOff = 1;
+            freezeLocationX = locationX;
+            freezeLocationY = locationY;
+            uiController.bubbleTranslate(freezeLocationX, freezeLocationY, "pale-bubble")        
+        }
+        else
+            onOff = 0;
     }
 
     function movingMedian(buffer, newValue)
     {
-        var valueUpdate = newValue;
-        var middleValue;
-        var filteredMedian;
-		var tempBuffer = [];
-        
-        buffer.push(valueUpdate)
-       
-        
-        if(buffer.length > 20){
-   
-            buffer.splice(0, 1);
-            }
-        
-        for(var i = 0; i < buffer.length; i++){
-		tempBuffer[i] = buffer[i];
-        }
-        
-        
-        tempBuffer.sort(function(a,b){return a-b});
-        
-        middleValue = tempBuffer.length/2;
-        
-            if (tempBuffer.length % 2 === 0){
-                filteredMedian = (tempBuffer[middleValue] + tempBuffer[middleValue-1]) / 2;
-            }
-            else {
-                filteredMedian = tempBuffer[middleValue-0.5];
-            }
-
-         return filteredMedian;
-	}
-         
-         
-      //ADVANCED FUNCTIONALITY
-      // =================================================================
       // This function handles the Moving Median Filter
       // Input:
-      //      buffer
-      //      The buffer in which the function will apply the moving to.
+      //      buffer - the buffer in which the function will apply the moving to.
 
-      //      newValue
-      //      This should be the newest value that will be pushed into the buffer
+      //      newValue - the newest value that will be pushed into the buffer
 
-      // Output: filteredValue
-      //      This function should return the result of the moving average filter
-   // }
+      // Output: filteredValue - returns the result of the moving median filter
+      // NOTE: Jerky motion when using this function for some reason
+        
+        var tempBuffer = [];
+        var valueUpdate = newValue;
+        var middleOfArray;
+        var filteredMedian;
+        
+        buffer.push(newValue);
+        
+        if(buffer.length > 30){
+            buffer.splice(0, 1);
+        }
+        
+        for(var i = 0; i < buffer.length; i++){
+            tempBuffer[i] = buffer[i];
+        }
+        
+        tempBuffer.sort(function(a, b){return a-b});
+        
+        middleOfArray = tempBuffer.length / 2;
+        
+        if(tempBuffer.length % 2 === 0)
+            filteredMedian = (tempBuffer[middleOfArray] + tempBuffer[middleOfArray - 1]) / 2;
+        else
+            filteredMedian = tempBuffer[middleOfArray - 0.5];
+
+        return filteredMedian;
+    }
 }

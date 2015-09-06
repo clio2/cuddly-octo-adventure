@@ -89,6 +89,10 @@ function SpiritLevelProcessor()
         filteredValueY = movingAverage(bufferY, gY);
         filteredValueZ = movingAverage(bufferZ, gZ);
         
+        //filteredValueX = movingMedian(bufferX, gX);
+        //filteredValueY = movingMedian(bufferY, gY);
+        //filteredValueZ = movingMedian(bufferZ, gZ);
+        
         angleFromZ = displayAngle(filteredValueX, filteredValueY, filteredValueZ);
         
         // Bubble translate code
